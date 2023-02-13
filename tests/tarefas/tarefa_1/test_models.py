@@ -12,7 +12,6 @@ class GroupModelTest(TestCase):
         expected = 50
         received = Group._meta.get_field("scientific_name").max_length
         message = "Verifique se o max_length do campo 'scientific_name' está com o valor correto."
-
         self.assertEqual(received, expected, message)
 
         expected = True
@@ -22,7 +21,6 @@ class GroupModelTest(TestCase):
 
     @patch("django.utils.timezone.now", return_value="2022-11-27T17:55:22.819371Z")
     def test_field_created_at_properties(self, _: MagicMock):
-
         expected = timezone.now()
         group_data = {"scientific_name": "canis familiares"}
         created_group = Group.objects.create(**group_data)
