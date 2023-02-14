@@ -6,5 +6,5 @@ class Group(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
     pet = models.ForeignKey(
-        "pets.Pet", on_delete=models.RESTRICT, related_name="groups"
+        "pets.Pet", on_delete=models.RESTRICT, related_name="group"
     )
