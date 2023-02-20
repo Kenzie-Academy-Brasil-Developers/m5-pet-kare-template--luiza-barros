@@ -13,5 +13,5 @@ class PetSerializer(serializers.Serializer):
     )
     id = serializers.IntegerField(read_only=True)
 
-    group = GroupSerializer(many=True)
+    group = GroupSerializer()
     traits = TraitSerializer(many=True)
