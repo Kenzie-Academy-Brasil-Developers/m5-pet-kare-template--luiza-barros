@@ -9,14 +9,6 @@ from rest_framework.pagination import PageNumberPagination
 
 
 class PetView(APIView, PageNumberPagination):
-    def get(self, request):
-        pets = Pet.objects.all()
-        result_page = self.paginate_queryset(pets, request)
-
-        serializer = PetSerializer(result_page, many=True)
-
-        return self.get_paginated_response(serializer.data)
-
     def post(self, request):
         serializer = PetSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -47,3 +39,29 @@ class PetView(APIView, PageNumberPagination):
 
         serializer = PetSerializer(pet_obj)
         return Response(serializer.data, status.HTTP_201_CREATED)
+
+
+class PetDetailView(APIView):
+    def get(self, request, pet_id):
+        try:
+            pet = Pet.objects.get(id=pet_id)
+        except Pet.DoesNotExist:
+            return Response({"detail": "Not found."}, status.HTTP_404_NOT_FOUND)
+
+        trait = request.query_params.get("trait", None)
+        pets = Pet.objects.filter(traits=trait)
+
+        result_page = self.paginate_queryset(pets, request)
+        serializer = PetSerializer(result_page, many=True)
+
+        return self.get_paginated_response(serializer.data, status.HTTP_200_OK)
+
+    def delete(self, request, pet_id):
+        try:
+            pet = Pet.objects.get(id=pet_id)
+        except Pet.DoesNotExist:
+            return Response({"detail": "Not found."}, status.HTTP_404_NOT_FOUND)
+
+        pet.delete()
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
