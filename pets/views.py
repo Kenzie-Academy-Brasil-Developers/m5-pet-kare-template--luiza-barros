@@ -2,6 +2,8 @@ from django.shortcuts import render
 from rest_framework.views import APIView, status
 from rest_framework.response import Response
 from .serializers import PetSerializer
+from groups.serializers import GroupSerializer
+from traits.serializers import TraitSerializer
 from .models import Pet
 from traits.models import Trait
 from groups.models import Group
@@ -15,6 +17,15 @@ class PetView(APIView, PageNumberPagination):
 
         group_dict = serializer.validated_data.pop("group")
         traits_list = serializer.validated_data.pop("traits")
+
+        serializer_group = GroupSerializer(data=group_dict)
+        serializer_group.is_valid(raise_exception=True)
+
+        serializer_traits = TraitSerializer(data=traits_list, many=True)
+        serializer_traits.is_valid(raise_exception=True)
+
+        group_dict = serializer_group.validated_data
+        traits_list = serializer_traits.validated_data
 
         pet_obj = Pet.objects.create(**serializer.validated_data)
 
