@@ -14,3 +14,11 @@ class Pet(models.Model):
     sex = models.CharField(
         max_length=20, choices=SexChoices.choices, default=SexChoices.DEFAULT
     )
+
+    group = models.ForeignKey(
+        "groups.Group",
+        on_delete=models.PROTECT,
+        related_name="pets",
+        blank=True,
+        null=True,
+    )
